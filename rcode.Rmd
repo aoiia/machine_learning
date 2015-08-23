@@ -9,10 +9,13 @@ trainColNums <- unname(colSums(is.na(training_subset)))
 complete_cases<-which(trainColNums == 0)
 complete_cases
 training_subset2<-subset(training_subset[,complete_cases])
+
 training_subset3<-data.frame(training_subset2[c(2:11, 21:42, 49:51, 61:73, 83:93)])
 
 inTrain<-createDataPartition(y=training_subset3$classe, p=0.7, list=FALSE)
+
 training_data<-training_subset3[inTrain,]
+
 testing_data<-training_subset3[-inTrain,]
 
 
