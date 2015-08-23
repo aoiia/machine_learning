@@ -1,0 +1,42 @@
+library(caret)
+
+training<-read.table("C:/Users/user/Documents/work/coursera/Practical Machine Learning/assignment/pml-training.csv", header=TRUE, sep=',')
+training_subset<-subset(training[training$new_window=="no",])
+trainColNums <- unname(colSums(is.na(training_subset)))
+complete_cases<-which(trainColNums == 0)
+complete_cases
+training_subset2<-subset(training_subset[,complete_cases])
+training_subset3<-data.frame(training_subset2[c(2:11, 21:42, 49:51, 61:73, 83:93)])
+
+inTrain<-createDataPartition(y=training_subset3$classe, p=0.7, list=FALSE)
+training_data<-training_subset3[inTrain,]
+testing_data<-training_subset3[-inTrain,]
+
+
+modelFit1<-train(classe~., method="C5.0Tree", data=training_data)
+modelFit1
+modelFit1$finalModel
+
+
+predictions<-predict(modelFit1, newdata=testing_data)
+confusionMatrix(predictions,testing_data$classe)
+
+
+
+testing<-read.table("C:/Users/user/Documents/work/coursera/Practical Machine Learning/assignment/pml-testing.csv", header=TRUE, sep=',')
+
+predictions1<-predict(modelFit1,newdata=testing)
+predictions1
+
+answers=c("B","A","B","A","A","E","D","B","A","A","B","C","B","A","E","E","A","B","B","B")
+answers
+
+pml_write_files = function(x){
+  n = length(x)
+  for(i in 1:n){
+    filename = paste0("problem_id_",i,".txt")
+    write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
+  }
+}
+
+pml_write_files(answers)
