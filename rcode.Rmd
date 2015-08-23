@@ -1,8 +1,11 @@
 library(caret)
 
 training<-read.table("C:/Users/user/Documents/work/coursera/Practical Machine Learning/assignment/pml-training.csv", header=TRUE, sep=',')
+
 training_subset<-subset(training[training$new_window=="no",])
+
 trainColNums <- unname(colSums(is.na(training_subset)))
+
 complete_cases<-which(trainColNums == 0)
 complete_cases
 training_subset2<-subset(training_subset[,complete_cases])
